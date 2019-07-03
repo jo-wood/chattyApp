@@ -17,6 +17,8 @@ const wss = new SocketServer({ server });
 // the ws parameter in the callback.
 
 const clients = [];
+let clientsLength = 0;
+
 
 function addMessageToDb(newMessage) {
   messages.push(newMessage);
@@ -24,6 +26,7 @@ function addMessageToDb(newMessage) {
 }
 
 SocketServer.prototype.broadcast = (msg) => {
+
   clients.map((c) => {
     c.send(JSON.stringify(msg));
   });
@@ -33,6 +36,9 @@ SocketServer.prototype.broadcast = (msg) => {
 wss.on('connection', (client) => {
 
   clients.push(client);
+  clientsLength = wss.clients.size;
+  wss.broadcast({numberOfUsers: clientsLength});
+
 
   wss.broadcast({ initialLoad: messages });
 
