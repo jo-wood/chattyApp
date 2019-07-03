@@ -5,7 +5,7 @@ class ChatBar extends Component {
 
   
   handleNewMessage = e => {
-    const updateName = this.refs.displayName.value;
+    const updateName = this.refs.displayName.value || 'Anonymous';
     const updateMessage = this.refs.newMessage.value;
     const addNewMessage = this.props.newData;
     if (e.charCode == 13) {
