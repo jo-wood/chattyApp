@@ -40,13 +40,13 @@ wss.on('connection', (client) => {
   client.on('message', (msgData) => {
     const msg = JSON.parse(msgData);
     const { username, content }  = msg;
-    const message = {
+    const renderMessage = {
       username: username,
       content: content,
       messageId: uuid()
     };
-    addMessageToDb(message);
-    wss.broadcast(msg);
+    addMessageToDb(renderMessage);
+    wss.broadcast({ newMessage: renderMessage });
   }); 
 
 
