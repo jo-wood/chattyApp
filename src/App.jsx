@@ -15,7 +15,7 @@ class App extends Component {
       },
       messageDetail: [],
       isOpened: false,
-      numOfUsers: 0
+      numOfUsers: 1
     }
   }
 
@@ -61,9 +61,8 @@ class App extends Component {
         this.setState({ messageDetail: [...oldMessages, newMessage]})
       } else if (numberOfUsers) {
         const currentUserCount = this.state.numOfUsers;
-        const updateCount = currentUserCount + 1;
-        if (numberOfUsers != this.state.numOfUsers) {
-          this.setState({ numOfUsers: updateCount } )
+        if (numberOfUsers != currentUserCount) {
+          this.setState({ numOfUsers: numberOfUsers } )
         }
       } else {
         console.log('incoming socket message: ', socketMsg);
