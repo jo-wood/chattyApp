@@ -9,8 +9,6 @@ class ChatBar extends Component {
     const updateMessage = this.refs.newMessage.value;
     const addNewMessage = this.props.newData;
     if (e.charCode == 13) {
-      console.log();
-      
       addNewMessage( { username: updateName, content: updateMessage}, updateName);
       this.refs.newMessage.value = '';
     }

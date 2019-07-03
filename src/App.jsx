@@ -26,7 +26,6 @@ class App extends Component {
 }
 
   addNewMessage = (newMessage, displayName) => {
-    const oldMessages = this.state.messageDetail;
     this.sendMsg(newMessage);
     this.setState({ 
       chatbarDefaults: { currentUser: displayName, newContent: ''},
@@ -49,12 +48,13 @@ class App extends Component {
     this.socket.addEventListener('message', (msg) => {
       const socketMsg = JSON.parse(msg.data);
       const initialLoad = socketMsg.initialLoad;
-      const newMessage = socketMsg.messageId; 
+      const newMessage = socketMsg.newMessage; 
       
       if (initialLoad) {
         this.setState({ messageDetail: initialLoad });
       } else if (newMessage) {
-        this.setState({ messageDetail: [...initialLoad, newMessage]})
+        const oldMessages = this.state.messageDetail;
+        this.setState({ messageDetail: [...oldMessages, newMessage]})
       } else {
         console.log('incoming socket message: ', socketMsg);
       }
