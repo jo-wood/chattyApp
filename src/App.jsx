@@ -14,9 +14,12 @@ class App extends Component {
         newContent: 'feeling chatty? add message + ENTER'
       },
       messageDetail: [],
-      isOpened: false
+      isOpened: false,
+      numOfUsers: 0
     }
   }
+
+
   sendMsg(msg) {
   if (this.state.isOpened) {
     this.socket.send(JSON.stringify(msg));
@@ -49,12 +52,19 @@ class App extends Component {
       const socketMsg = JSON.parse(msg.data);
       const initialLoad = socketMsg.initialLoad;
       const newMessage = socketMsg.newMessage; 
+      const numberOfUsers = socketMsg.numberOfUsers;
       
       if (initialLoad) {
-        this.setState({ messageDetail: initialLoad });
+        this.setState({ messageDetail: initialLoad  });
       } else if (newMessage) {
         const oldMessages = this.state.messageDetail;
         this.setState({ messageDetail: [...oldMessages, newMessage]})
+      } else if (numberOfUsers) {
+        const currentUserCount = this.state.numOfUsers;
+        const updateCount = currentUserCount + 1;
+        if (numberOfUsers != this.state.numOfUsers) {
+          this.setState({ numOfUsers: updateCount } )
+        }
       } else {
         console.log('incoming socket message: ', socketMsg);
       }

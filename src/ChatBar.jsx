@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 
 class ChatBar extends Component {
-
+  
   
   handleNewMessage = e => {
     const updateName = this.refs.displayName.value || 'Anonymous';
