@@ -78,7 +78,8 @@ class App extends Component {
   }
 
   render() {
-    const { loading, messageDetail, chatbarDefaults } = this.state;
+    const { loading, messageDetail, chatbarDefaults, numOfUsers} = this.state;
+    const displayUsers = (numOfUsers === 1) ? (`${numOfUsers} user online`) : (`${numOfUsers} users online`)
     if (loading) {
       return <h1>Loading...</h1> 
     } else {
@@ -86,6 +87,9 @@ class App extends Component {
         <div>
           <nav className="navbar">
             <a href="/" className="navbar-brand">Chatty</a>
+            <div className='navbar-users'>
+              {displayUsers}
+            </div>
           </nav>
           <MessageList data={ messageDetail } />
           <ChatBar newData={ this.addNewMessage } user={chatbarDefaults} />
