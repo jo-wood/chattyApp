@@ -1,9 +1,6 @@
 import React, {Component} from 'react';
 import ChatBar from './ChatBar.jsx';
 import MessageList from './MessageList.jsx';
-import  messages  from './messages-db.js';
-
-
 
 
 class App extends Component {
@@ -16,7 +13,7 @@ class App extends Component {
         currentUser: 'Set a display name',
         newContent: 'feeling chatty? add message + ENTER'
       },
-      messageDetail: messages,
+      messageDetail: [],
       isOpened: false
     }
   }
@@ -30,9 +27,8 @@ class App extends Component {
 
   addNewMessage = (newMessage, displayName) => {
     const oldMessages = this.state.messageDetail;
-    this.sendMsg({ username: displayName, newMessage: newMessage });
+    this.sendMsg(newMessage);
     this.setState({ 
-      messageDetail: [...oldMessages, newMessage], 
       chatbarDefaults: { currentUser: displayName, newContent: ''},
     });
   }
@@ -51,7 +47,18 @@ class App extends Component {
     });
 
     this.socket.addEventListener('message', (msg) => {
-      console.log(msg.data)
+      const socketMsg = JSON.parse(msg.data);
+      const initialLoad = socketMsg.initialLoad;
+      const newMessage = socketMsg.messageId; 
+      
+      if (initialLoad) {
+        this.setState({ messageDetail: initialLoad });
+      } else if (newMessage) {
+        this.setState({ messageDetail: [...initialLoad, newMessage]})
+      } else {
+        console.log('incoming socket message: ', socketMsg);
+      }
+
     });
 
     this.socket.addEventListener('close', () => {
