@@ -48,6 +48,9 @@ wss.on('connection', (client) => {
     if (msg.nameNotify) {
       let notification = msg.nameNotify;
       wss.broadcast({ nameNotify: notification});
+    } else if (msg.initialLoad) {
+      let load = msg.initialLoad;
+      wss.broadcast({ initialLoad: load })
     } else {
       const { username, content } = msg;
       const renderMessage = {
