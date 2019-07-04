@@ -3,13 +3,23 @@ import React, { Component } from 'react';
 
 class ChatBar extends Component {
   
+  handleNewName = e => {
+    const displayName = this.refs.displayName.value;
+    const addNewMessage = this.props.newData;
+    if (e.charCode == 13) {
+      addNewMessage({ messageType: 'notification', displayName});
+    }
+  }
   
   handleNewMessage = e => {
-    const updateName = this.refs.displayName.value || 'Anonymous';
+
+    const displayName = this.refs.displayName.value || 'Anonymous';
     const updateMessage = this.refs.newMessage.value;
     const addNewMessage = this.props.newData;
     if (e.charCode == 13) {
-      addNewMessage( { username: updateName, content: updateMessage}, updateName);
+      console.log(e.target)
+
+      addNewMessage({ messageType: 'newMessage', username: displayName, content: updateMessage});
       this.refs.newMessage.value = '';
     }
 
@@ -23,7 +33,7 @@ class ChatBar extends Component {
           className="chatbar-username"
             ref="displayName"
             placeholder={currentUser} 
-            onChange={this.handleNewMessage} />
+            onKeyPress={this.handleNewName} />
           <input 
             className="chatbar-message"
             ref="newMessage"

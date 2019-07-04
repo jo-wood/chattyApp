@@ -11,11 +11,13 @@ class App extends Component {
       loading: true, 
       chatbarDefaults: {
         currentUser: 'Set a display name',
+        fromName: 'first-change',
         newContent: 'feeling chatty? add message + ENTER'
       },
       messageDetail: [],
       isOpened: false,
-      numOfUsers: 1
+      numOfUsers: 1, 
+      messageType: 'newMessage'
     }
   }
 
@@ -28,11 +30,17 @@ class App extends Component {
   }
 }
 
-  addNewMessage = (newMessage, displayName) => {
-    this.sendMsg(newMessage);
-    this.setState({ 
-      chatbarDefaults: { currentUser: displayName, newContent: ''},
-    });
+  addNewMessage = (newMessage) => {
+    if (newMessage.messageType === 'newMessage') {
+      this.setState({messageType: 'newMessage'})
+      this.sendMsg(newMessage);
+    }
+    if (newMessage.messageType === 'notification') {
+      this.setState({ messageType: 'notification' })
+      const {displayName} = newMessage;
+      const currentName = this.state.chatbarDefaults.currentUser;
+      this.sendMsg({ nameNotify: { oldName: currentName, toName: displayName } });
+    }
   }
 
   componentDidMount() {
@@ -45,29 +53,43 @@ class App extends Component {
 
     this.socket.addEventListener('open', () => {
       this.setState({isOpened: true });
-      console.log('websocket connection is open');
     });
 
     this.socket.addEventListener('message', (msg) => {
-      const socketMsg = JSON.parse(msg.data);
-      const initialLoad = socketMsg.initialLoad;
-      const newMessage = socketMsg.newMessage; 
-      const numberOfUsers = socketMsg.numberOfUsers;
-      
-      if (initialLoad) {
-        this.setState({ messageDetail: initialLoad  });
-      } else if (newMessage) {
-        const oldMessages = this.state.messageDetail;
-        this.setState({ messageDetail: [...oldMessages, newMessage]})
-      } else if (numberOfUsers) {
-        const currentUserCount = this.state.numOfUsers;
-        if (numberOfUsers != currentUserCount) {
-          this.setState({ numOfUsers: numberOfUsers } )
-        }
-      } else {
-        console.log('incoming socket message: ', socketMsg);
-      }
 
+      //* websocket deconstruction
+      const socketMsg = JSON.parse(msg.data);
+      const compareType = Object.keys(socketMsg);
+      const { initialLoad, newMessage, numberOfUsers, nameNotify } = socketMsg;
+
+
+      //* state deconstruction
+      const { messageDetail, numOfUsers } = this.state;
+      const oldMessages = messageDetail;
+      const currentUserCount = numOfUsers;
+
+      switch (compareType[0]) {
+
+        case ('initialLoad'):
+          this.setState({ messageDetail: initialLoad });
+          break;
+        case ('newMessage'):
+
+        this.setState({ messageDetail: [...oldMessages, newMessage] });
+          break;
+        case ('numberOfUsers'):
+
+        if (numberOfUsers !== currentUserCount) {this.setState({ numOfUsers: numberOfUsers }) } 
+          break;
+        case ('nameNotify'):
+          const { oldName, toName } = nameNotify;
+          this.setState({ chatbarDefaults: { currentUser: toName, fromName: oldName, newContent: '' } });
+          break;
+        default:
+          console.log('websocket sent msg to client');
+          break;
+      }
+      
     });
 
     this.socket.addEventListener('close', () => {
@@ -78,7 +100,7 @@ class App extends Component {
   }
 
   render() {
-    const { loading, messageDetail, chatbarDefaults, numOfUsers} = this.state;
+    const { loading, messageDetail, chatbarDefaults, numOfUsers, messageType} = this.state;
     const displayUsers = (numOfUsers === 1) ? (`${numOfUsers} user online`) : (`${numOfUsers} users online`)
     if (loading) {
       return <h1>Loading...</h1> 
@@ -91,7 +113,7 @@ class App extends Component {
               {displayUsers}
             </div>
           </nav>
-          <MessageList data={ messageDetail } />
+          <MessageList data={ {messageType, messages: messageDetail, notification: chatbarDefaults}  } />
           <ChatBar newData={ this.addNewMessage } user={chatbarDefaults} />
         </div>
       );
