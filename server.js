@@ -45,14 +45,20 @@ wss.on('connection', (client) => {
 
   client.on('message', (msgData) => {
     const msg = JSON.parse(msgData);
-    const { username, content }  = msg;
-    const renderMessage = {
-      username: username,
-      content: content,
-      messageId: uuid()
-    };
-    addMessageToDb(renderMessage);
-    wss.broadcast({ newMessage: renderMessage });
+    if (msg.nameNotify) {
+      let notification = msg.nameNotify;
+      wss.broadcast({ nameNotify: notification});
+    } else {
+      const { username, content } = msg;
+      const renderMessage = {
+        username: username,
+        content: content,
+        messageId: uuid()
+      };
+      addMessageToDb(renderMessage);
+      wss.broadcast({ newMessage: renderMessage });
+    }
+
   }); 
 
 
