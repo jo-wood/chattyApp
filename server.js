@@ -17,12 +17,16 @@ const wss = new SocketServer({ server });
 // the ws parameter in the callback.
 
 const clients = [];
-let clientsLength = 0;
 
 
-function addMessageToDb(newMessage) {
-  messages.push(newMessage);
-  console.log('message db: ', messages);
+function addMessageToDb(newPost) {
+  messages.push(newPost);
+  const { nameNotify, newMessage } = newPost;
+  if (nameNotify) {
+  wss.broadcast({ nameNotify });    
+  } else {
+    wss.broadcast({ newMessage });
+  }
 }
 
 SocketServer.prototype.broadcast = (msg) => {
@@ -36,10 +40,9 @@ SocketServer.prototype.broadcast = (msg) => {
 wss.on('connection', (client) => {
 
   clients.push(client);
-  clientsLength = wss.clients.size;
-  wss.broadcast({numberOfUsers: clientsLength});
+  wss.broadcast({ numberOfUsers: wss.clients.size});
 
-
+  // send an initial loading of messages 
   wss.broadcast({ initialLoad: messages });
 
 
@@ -47,10 +50,7 @@ wss.on('connection', (client) => {
     const msg = JSON.parse(msgData);
     if (msg.nameNotify) {
       let notification = msg.nameNotify;
-      wss.broadcast({ nameNotify: notification});
-    } else if (msg.initialLoad) {
-      let load = msg.initialLoad;
-      wss.broadcast({ initialLoad: load })
+      addMessageToDb({ nameNotify: notification});
     } else {
       const { username, content } = msg;
       const renderMessage = {
@@ -58,17 +58,14 @@ wss.on('connection', (client) => {
         content: content,
         messageId: uuid()
       };
-      addMessageToDb(renderMessage);
-      wss.broadcast({ newMessage: renderMessage });
+      addMessageToDb({ newMessage: renderMessage});
     }
-
   }); 
 
 
 
   client.on('close', () => {
-    clientsLength = wss.clients.size;
-    wss.broadcast({ numberOfUsers: clientsLength });
+    wss.broadcast({ numberOfUsers: wss.clients.size });
     console.log('Client disconnected');
   });
 
