@@ -13,22 +13,22 @@ class Message extends Component{
         </div>
       );
     } else if (type === 'notification') {
-      const { oldName, newName } = props;
-      return this.notifyNameChange(oldName, newName);
+      const { fromName, toName, } = props;
+        return this.notifyNameChange(fromName, toName);
     }
   }
 
-  notifyNameChange(currentUser, fromName) {
-    const checkIfNameUpdate = (currentUser !== fromName && currentUser !== 'Set a display name' && fromName !== 'first-change' && fromName !== 'Set a display name');
-    const nameChangeString = `${currentUser} changed their name to ${fromName}`;
-    if (checkIfNameUpdate) {
+  notifyNameChange(fromName, toName) {
+    if (fromName !== toName) {
+      const nameChangeString = ' changed their name to ';
       return (
         <div className="notification">
+          <em>{fromName}</em>
           {nameChangeString}
+          <strong>{toName}</strong>
         </div>);
-    } else {
-      return false;
     }
+
   }
 
   render() {

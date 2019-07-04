@@ -3,11 +3,12 @@ import React, { Component } from 'react';
 
 class ChatBar extends Component {
   
-  handleNewName = e => {
+  handleNewName = (e) => {
+    console.log(e.target)
     const displayName = this.refs.displayName.value;
     const addNewMessage = this.props.newData;
     if (e.charCode == 13) {
-      addNewMessage({ messageType: 'notification', displayName});
+        addNewMessage({ messageType: 'notification', displayName });
     }
   }
   
@@ -16,8 +17,7 @@ class ChatBar extends Component {
     const displayName = this.refs.displayName.value || 'Anonymous';
     const updateMessage = this.refs.newMessage.value;
     const addNewMessage = this.props.newData;
-    if (e.charCode == 13) {
-      console.log(e.target)
+    if (e.charCode == 13 && updateMessage) {
 
       addNewMessage({ messageType: 'newMessage', username: displayName, content: updateMessage});
       this.refs.newMessage.value = '';
@@ -27,12 +27,13 @@ class ChatBar extends Component {
 
   render() {
     const  { currentUser, newContent } = this.props.user;
+    const placeholder = (currentUser === 'Anonymous') ? 'Set a display name' : currentUser
     return (
       <footer className="chatbar">
           <input 
           className="chatbar-username"
             ref="displayName"
-            placeholder={currentUser} 
+            placeholder={placeholder} 
             onKeyPress={this.handleNewName} />
           <input 
             className="chatbar-message"
