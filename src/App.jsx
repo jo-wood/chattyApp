@@ -71,7 +71,7 @@ class App extends Component {
       switch (compareType[0]) {
 
         case ('initialLoad'):
-          this.setState({ messageDetail: initialLoad });
+          this.setState({messageType: 'initialLoad',  messageDetail: initialLoad });
           break;
         case ('newMessage'):
 

@@ -4,7 +4,7 @@ class Message extends Component{
 
   checkPropType(props) {
     let { type } = props;
-    if (type === 'message') {
+    if (type === 'newMessage') {
       const { user, content } = props;
       return (
         <div className="message" >
@@ -32,9 +32,10 @@ class Message extends Component{
   }
 
   render() {
+    const post = this.checkPropType(this.props);
     return (
       <div>
-        {this.checkPropType(this.props)}
+        {post}
       </div>
     )
   }

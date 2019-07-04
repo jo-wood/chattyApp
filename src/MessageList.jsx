@@ -6,30 +6,46 @@ import Message from './Message.jsx'
 
 class MessageList extends Component {
 
-  renderToMessageList({messageType,  messages, notification }) {
-    if (Array.isArray(messages)){
-      return (messages.map(message => {
-        const { username, content, messageId } = message;
-        return <Message key={messageId} type={'message'} user={username} content={content} />
-      }));
-    } 
-    const { username, content, messageId } = messages;
-    const { currentUser, fromName } = notification;
-    if (messageType === 'notification') {
-      return <Message type={'notification'} oldName={fromName} newName={currentUser} />
-    } else if (messageType === 'message') {
-      return <Message key={messageId} type={'message'} user={username} content={content} />
-    } 
-
+  constructor(props){
+    super(props)
+    this.state = {
+      currentPosts: []
+    }
   }
 
+  renderToMessageList(messageType, postInfo ) {
+    const { currentPosts } = this.state;
+
+    if (messageType === 'initialLoad') {
+      const initialLoad = (postInfo.map(message => {
+        const { username, content, messageId } = message;
+        return (<Message key={messageId} type={'newMessage'} user={username} content={content} />);
+      }));
+    currentPosts.push(initialLoad);
+
+    } else if (messageType === 'newMessage') {
+      const newMessage = postInfo[postInfo.length - 1];
+      const { username, content, messageId } = newMessage;
+      currentPosts.push(<Message key={messageId} type={'newMessage'} user={username} content={content} />);
+
+    } else if (messageType === 'notification'){
+      const { currentUser, fromName } = postInfo;
+      currentPosts.push(<Message type={'notification'} oldName={fromName} newName={currentUser} />);
+    }
+    return currentPosts.map((post) => {      
+      return  post 
+    });
+  } 
+
   render() {
-    const { props }= this;
-    const messageInfo = (<div>{this.renderToMessageList(props.data)}</div>);
+    const { data }= this.props;
+    const { messageType, messages, notification} = data;
+
+    const checkType = (messageType === 'newMessage' || messageType === 'initialLoad') ? (<div>{this.renderToMessageList(messageType, messages)}</div>) : (<div>{this.renderToMessageList(messageType, notification)}</div>)
 
     return (
     <main className="messages">
-      { messageInfo }
+      { checkType }
     </main>
     );
   }
