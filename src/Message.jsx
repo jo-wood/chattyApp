@@ -19,11 +19,11 @@ class Message extends Component{
   }
 
   notifyNameChange(currentUser, fromName) {
-    const checkIfNameUpdate = (currentUser !== fromName && fromName !== 'first-change' && fromName !== 'Set a display name');
-    const nameChangeString = `${fromName} changed their name to ${currentUser}`;
+    const checkIfNameUpdate = (currentUser !== fromName && currentUser !== 'Set a display name' && fromName !== 'first-change' && fromName !== 'Set a display name');
+    const nameChangeString = `${currentUser} changed their name to ${fromName}`;
     if (checkIfNameUpdate) {
       return (
-        <div className="message system">
+        <div className="notification">
           {nameChangeString}
         </div>);
     } else {

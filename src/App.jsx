@@ -14,10 +14,11 @@ class App extends Component {
         fromName: 'first-change',
         newContent: 'feeling chatty? add message + ENTER'
       },
+      messageType: 'newMessage',
       messageDetail: [],
+      notifications: [],
       isOpened: false,
-      numOfUsers: 1, 
-      messageType: 'newMessage'
+      numOfUsers: 1
     }
   }
 
@@ -83,7 +84,11 @@ class App extends Component {
           break;
         case ('nameNotify'):
           const { oldName, toName } = nameNotify;
-          this.setState({ chatbarDefaults: { currentUser: toName, fromName: oldName, newContent: '' } });
+          const notifyPost = { currentUser: toName, fromName: oldName, newContent: '' };
+          this.setState({ 
+            chatbarDefaults: notifyPost,
+            messageDetail: [...oldMessages, notifyPost] 
+          });
           break;
         default:
           console.log('websocket sent msg to client');
