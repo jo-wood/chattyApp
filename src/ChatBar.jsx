@@ -4,7 +4,6 @@ import React, { Component } from 'react';
 class ChatBar extends Component {
   
   handleNewName = (e) => {
-    console.log(e.target)
     const displayName = this.refs.displayName.value;
     const addNewMessage = this.props.newData;
     if (e.charCode == 13) {
@@ -15,6 +14,7 @@ class ChatBar extends Component {
   handleNewMessage = e => {
 
     const displayName = this.refs.displayName.value || 'Anonymous';
+    console.log(displayName)
     const updateMessage = this.refs.newMessage.value;
     const addNewMessage = this.props.newData;
     if (e.charCode == 13 && updateMessage) {
@@ -26,8 +26,8 @@ class ChatBar extends Component {
   }
 
   render() {
-    const  { currentUser, newContent } = this.props.user;
-    const placeholder = (currentUser === 'Anonymous') ? 'Set a display name' : currentUser
+    const  { currentUser, newContent} = this.props.user;
+    const placeholder = (currentUser === 'Anonymous') ? 'Set a display name' : currentUser 
     return (
       <footer className="chatbar">
           <input 

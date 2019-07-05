@@ -31,13 +31,13 @@ class App extends Component {
 }
 
   addNewMessage = (newMessage) => {
-    const { currentUser } = this.state.chatbarDefaults;
-    const { displayName } = newMessage;
     if (newMessage.messageType === 'newMessage') {
       this.setState({messageType: 'newMessage'})
       this.sendMsg(newMessage);
     }
     if (newMessage.messageType === 'notification') {
+      const {currentUser} = this.state.chatbarDefaults;
+      const { displayName } = newMessage;
       this.sendMsg({ nameNotify: { oldName: currentUser, currentUser: displayName } });
     }
   }
@@ -63,7 +63,8 @@ class App extends Component {
 
 
       //* state deconstruction
-      const { postDetail, numOfUsers } = this.state;
+      const { postDetail, numOfUsers, chatbarDefaults } = this.state;
+
       const oldMessages = postDetail;
       const currentUserCount = numOfUsers;
 
@@ -74,7 +75,12 @@ class App extends Component {
           break;
 
         case ('newMessage'):
-        this.setState({ postDetail: [...oldMessages, newMessage] });
+          const { username } = newMessage;
+          if ((chatbarDefaults.currentUser) !== (newMessage.username)) {
+            this.setState({ chatbarDefaults: { currentUser: username }, postDetail: [...oldMessages, newMessage]});
+          } else {
+            this.setState({ postDetail: [...oldMessages, newMessage] });
+          }
           break;
 
         case ('numberOfUsers'):
@@ -119,7 +125,7 @@ class App extends Component {
               {displayUsers}
             </div>
           </nav>
-          <MessageList data={ {postDetail}  } />
+          <MessageList data={ postDetail } />
           <ChatBar newData={ this.addNewMessage } user={chatbarDefaults} />
         </div>
       );

@@ -7,11 +7,11 @@ import Message from './Message.jsx'
 class MessageList extends Component {
 
 
-  renderToMessageList(postDetail) {
-
+  renderToMessageList(data) {
+    
     let messageList = [];
 
-    const currentList = (postDetail.map(message => {
+    const currentList = (data.map(message => {
       if (message.messageId) {
         const { username, content, messageId } = message;
         return (<Message key={messageId} type={'newMessage'} user={username} content={content} />);
@@ -28,8 +28,8 @@ class MessageList extends Component {
   }
 
   render() {
-    const { postDetail } = this.props.data;
-    const checkType = (<div>{this.renderToMessageList(postDetail)}</div>);
+    const { data } = this.props;
+    const checkType = (<div>{this.renderToMessageList(data)}</div>);
 
     return (
     <main className="messages">

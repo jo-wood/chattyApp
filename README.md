@@ -1,3 +1,26 @@
+# chattyApp
+
+## App Summary
+
+This app was produced during participation in Lighthouse Labs curriculum.
+
+## Explore chattyApp:
+
+
+!['']()
+
+!['']()
+
+## Getting Started
+
+**GETTING STARTED:**
+
+
+
+## Dev Dependencies
+
+
+
 React Boilerplate
 =====================
 
