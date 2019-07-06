@@ -5,27 +5,33 @@ class Message extends Component{
   checkPropType(props) {
     let { type } = props;
     if (type === 'newMessage') {
-      const { user, content } = props;
+      const { user, content, displayColor } = props;
+      const style = {
+        color: displayColor
+      }
       return (
         <div className="message" >
-          <span className="message-username">{user}</span>
+          <span style={style} className="message-username">{user}</span>
           <span className="message-content">{content}</span>
         </div>
       );
     } else if (type === 'notification') {
-      const { fromName, toName, } = props;
-        return this.notifyNameChange(fromName, toName);
+      const { fromName, toName, displayColor } = props;
+        return this.notifyNameChange(fromName, toName, displayColor);
     }
   }
 
-  notifyNameChange(fromName, toName) {
+  notifyNameChange(fromName, toName, displayColor) {
+    const style = {
+      color: displayColor
+    }
     if (fromName !== toName) {
       const nameChangeString = ' changed their name to ';
       return (
         <div className="notification">
           <em>{fromName}</em>
           {nameChangeString}
-          <strong>{toName}</strong>
+          <strong style={style}>{toName}</strong>
         </div>);
     }
 

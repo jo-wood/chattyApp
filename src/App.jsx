@@ -11,6 +11,7 @@ class App extends Component {
       loading: true, 
       chatbarDefaults: {
         currentUser: 'Anonymous',
+        nameColor: '',
         newContent: 'feeling chatty? add message + ENTER',
         oldName: 'Anonymous'
       },
@@ -32,8 +33,9 @@ class App extends Component {
 
   addNewMessage = (newMessage) => {
     if (newMessage.messageType === 'newMessage') {
+      let {currentUser} = this.state.chatbarDefaults;
       this.setState({messageType: 'newMessage'})
-      this.sendMsg(newMessage);
+      this.sendMsg({newMsg: newMessage, currentUser });
     }
     if (newMessage.messageType === 'notification') {
       const {currentUser} = this.state.chatbarDefaults;
@@ -75,9 +77,9 @@ class App extends Component {
           break;
 
         case ('newMessage'):
-          const { username } = newMessage;
+          const { username, nameColor } = newMessage;
           if ((chatbarDefaults.currentUser) !== (newMessage.username)) {
-            this.setState({ chatbarDefaults: { currentUser: username }, postDetail: [...oldMessages, newMessage]});
+            this.setState({ chatbarDefaults: { currentUser: username, nameColor: nameColor}, postDetail: [...oldMessages, newMessage]});
           } else {
             this.setState({ postDetail: [...oldMessages, newMessage] });
           }
@@ -88,8 +90,8 @@ class App extends Component {
           break;
 
         case ('nameNotify'):
-          const { oldName, currentUser } = nameNotify;
-          const notifyPost = { currentUser, oldName, newContent: '' };
+          const { oldName, currentUser, currentColor } = nameNotify;
+          const notifyPost = { currentUser, nameColor: currentColor, oldName, newContent: '' };
           this.setState({
             postDetail: [...oldMessages, notifyPost],
             messageType: 'notification',
@@ -112,15 +114,21 @@ class App extends Component {
   }
 
   render() {
-    const { loading, postDetail, chatbarDefaults, numOfUsers, messageType} = this.state;
+    const { loading, postDetail, chatbarDefaults, numOfUsers} = this.state;
     const displayUsers = (numOfUsers === 1) ? (`${numOfUsers} user online`) : (`${numOfUsers} users online`)
     if (loading) {
-      return <h1>Loading...</h1> 
+      return (
+        <div className='loading'>
+          <h1>Loading...</h1> 
+          <i className="fa fa-comment"></i>
+        </div>
+      )
+
     } else {
       return (
         <div>
           <nav className="navbar">
-            <a href="/" className="navbar-brand">Chatty</a>
+            <a href="/" className="navbar-brand">Chatty <i className="fa fa-comment"></i></a>
             <div className='navbar-users'>
               {displayUsers}
             </div>

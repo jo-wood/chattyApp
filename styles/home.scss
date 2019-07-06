@@ -1,14 +1,15 @@
 body {
   background: white;
-  color: black;
+  color: #111018;
+  font-weight: bold;
   font-family: 'Open Sans', sans-serif;
   font-size: 14px;
   margin: 70px 0;
 }
 
 .chatbar {
-  background: tomato;
-  border-top: 1px solid black;
+  background: #332839;
+  color: #5c5a87;
   bottom: 0;
   display: flex;
   left: 0;
@@ -19,7 +20,8 @@ body {
 
 .chatbar-message,
 .chatbar-username {
-  border: 1px solid black;
+  border-radius: 5px;
+  border-style: none;
   display: block;
   height: 40px;
   line-height: 40px;
@@ -62,7 +64,8 @@ body {
 }
 
 .navbar {
-  background: tomato;
+  color: #ffffff;
+  background: #2A293E;
   border-bottom: 1px solid black;
   height: 60px;
   left: 0;
@@ -85,6 +88,7 @@ body {
 }
 
 .navbar-users {
+  color:#f3f3f7;
   float: right;
   padding: 2%;
   float: right;
@@ -92,6 +96,15 @@ body {
   font-size: 1.2em;
 }
 
-h1 {
-  color: tomato;
+.loading , .loading i {
+  font-size: 2em;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  color: #2A293E;
 }
+
+.fa.fa-comment{
+  color: #9f9dbe;
+}
+

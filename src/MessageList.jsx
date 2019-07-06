@@ -13,11 +13,11 @@ class MessageList extends Component {
 
     const currentList = (data.map(message => {
       if (message.messageId) {
-        const { username, content, messageId } = message;
-        return (<Message key={messageId} type={'newMessage'} user={username} content={content} />);
+        const { username, content, messageId, nameColor } = message;
+        return (<Message key={messageId} type={'newMessage'} user={username} displayColor={nameColor} content={content} />);
       } else {
-        const { currentUser, oldName } = message;
-        return (<Message type={'notification'} fromName={oldName} toName={currentUser} />)        
+        const { currentUser, oldName, nameColor } = message;
+        return (<Message type={'notification'} fromName={oldName} toName={currentUser} displayColor={nameColor}/>)        
       }
     }));
     messageList.push(currentList);
