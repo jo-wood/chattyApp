@@ -17,15 +17,39 @@ const wss = new SocketServer({ server });
 // the ws parameter in the callback.
 
 const clients = [];
+const userColor = {};
+
+function pickColor() {
+  let colorOptions = ['#FF6F61', '#D69C2F', '#343148', '#7F4145', '#BD3D3A', '#766F57'];
+
+  let optionLength = colorOptions.length;
+
+  let pickRandom = Math.floor(Math.random() +1 ) * optionLength;
+  let randomColor = colorOptions[pickRandom]
+  return {randomColor};
+}
+
+function checkColor(username, currentUser){
+  if (userColor.hasOwnProperty === username) {
+    return userColor[username];
+  } else if (userColor.hasOwnProperty === currentUser ){
+    return userColor[currentUser];
+  } else {
+    let clientSpecColor = pickColor();
+    userColor[currentUser] = clientSpecColor;
+    return clientSpecColor;
+  }
+}
 
 
 function addMessageToDb(newPost) {
   messages.push(newPost);
-  const { nameNotify, newMessage } = newPost;
-  if (nameNotify) {
-  wss.broadcast({ nameNotify });    
+  const { newMessage } = newPost;
+  if (newMessage) {
+  wss.broadcast({ newMessage });    
   } else {
-    wss.broadcast({ newMessage });
+      const { nameNotify } = newPost;
+    wss.broadcast({ nameNotify });
   }
 }
 
@@ -49,14 +73,21 @@ wss.on('connection', (client) => {
   client.on('message', (msgData) => {
     const msg = JSON.parse(msgData);
     if (msg.nameNotify) {
-      let notification = msg.nameNotify;
-      addMessageToDb({ nameNotify: notification});
+      let { oldName, currentUser } = msg.nameNotify;
+      addMessageToDb({ nameNotify: 
+        {oldName, currentUser, currentColor: checkColor(null, currentUser)}
+      });
     } else {
-      const { username, content } = msg;
+      const { username, content } = msg.newMsg;
+      const { currentUser } = msg;
+
       const renderMessage = {
         username: username,
         content: content,
-        messageId: uuid()
+        messageId: uuid(),
+        nameColor: checkColor(username, currentUser)
+
+
       };
       addMessageToDb({ newMessage: renderMessage});
     }
