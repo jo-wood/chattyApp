@@ -43,12 +43,16 @@ function checkColor(username, currentUser){
 
 
 function addMessageToDb(newPost) {
-  messages.push(newPost);
+
   const { newMessage } = newPost;
   if (newMessage) {
-  wss.broadcast({ newMessage });    
+    messages.push(newPost.newMessage);
+    wss.broadcast({
+      newMessage
+    });
   } else {
-      const { nameNotify } = newPost;
+    messages.push(newPost.nameNotify);
+    const { nameNotify } = newPost;
     wss.broadcast({ nameNotify });
   }
 }
@@ -69,11 +73,12 @@ wss.on('connection', (client) => {
   // send an initial loading of messages 
   wss.broadcast({ initialLoad: messages });
 
-
+console.log(messages)
   client.on('message', (msgData) => {
     const msg = JSON.parse(msgData);
-    if (msg.nameNotify) {
-      let { oldName, currentUser } = msg.nameNotify;
+    const nameChange = msg.nameNotify;
+    if (nameChange) {
+      let { oldName, currentUser } = nameChange;
       addMessageToDb({ nameNotify: 
         {oldName, currentUser, currentColor: checkColor(null, currentUser)}
       });
