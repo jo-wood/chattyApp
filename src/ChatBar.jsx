@@ -14,12 +14,11 @@ class ChatBar extends Component {
   handleNewMessage = e => {
 
     const displayName = this.refs.displayName.value || 'Anonymous';
-    console.log(displayName)
     const updateMessage = this.refs.newMessage.value;
     const addNewMessage = this.props.newData;
     if (e.charCode == 13 && updateMessage) {
 
-      addNewMessage({ messageType: 'newMessage', username: displayName, content: updateMessage});
+      addNewMessage({ messageType: 'newMessage', username: displayName, content: updateMessage, displayName}) ;
       this.refs.newMessage.value = '';
     }
 

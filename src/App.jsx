@@ -24,6 +24,7 @@ class App extends Component {
 
 
   sendMsg(msg) {
+
   if (this.state.isOpened) {
     this.socket.send(JSON.stringify(msg));
   } else {
@@ -32,16 +33,24 @@ class App extends Component {
 }
 
   addNewMessage = (newMessage) => {
+    const { currentUser } = this.state.chatbarDefaults;
+    const currentState = this.state;
+    const { displayName } = newMessage;
+    
     if (newMessage.messageType === 'newMessage') {
-      let {currentUser} = this.state.chatbarDefaults;
-      this.setState({messageType: 'newMessage'})
       this.sendMsg({newMsg: newMessage, currentUser });
+      if (currentUser !== displayName) {
+        this.sendMsg({ nameNotify: { oldName: currentUser, currentUser: displayName } });
+      }
     }
     if (newMessage.messageType === 'notification') {
-      const {currentUser} = this.state.chatbarDefaults;
-      const { displayName } = newMessage;
+
       this.sendMsg({ nameNotify: { oldName: currentUser, currentUser: displayName } });
     }
+
+    currentState.chatbarDefaults.currentUser = displayName;
+    currentState.chatbarDefaults.oldName = currentUser;
+    this.setState(currentState)
   }
 
   componentDidMount() {
@@ -61,11 +70,11 @@ class App extends Component {
       //* websocket deconstruction
       const socketMsg = JSON.parse(msg.data);
       const compareType = Object.keys(socketMsg);
-      const { initialLoad, newMessage, numberOfUsers, nameNotify } = socketMsg;
+      const { initialLoad,  newMessage, numberOfUsers, nameNotify } = socketMsg;
 
 
       //* state deconstruction
-      const { postDetail, numOfUsers, chatbarDefaults } = this.state;
+      const { postDetail, numOfUsers } = this.state;
 
       const oldMessages = postDetail;
       const currentUserCount = numOfUsers;
@@ -73,16 +82,11 @@ class App extends Component {
       switch (compareType[0]) {
 
         case ('initialLoad'):
-          this.setState({ messageType: 'newMessage', postDetail: initialLoad });
-          break;
+          this.setState({ messageType: 'newMessage', postDetail:  initialLoad });
+        break;
 
         case ('newMessage'):
-          const { username, nameColor } = newMessage;
-          if ((chatbarDefaults.currentUser) !== (newMessage.username)) {
-            this.setState({ chatbarDefaults: { currentUser: username, nameColor: nameColor}, postDetail: [...oldMessages, newMessage]});
-          } else {
-            this.setState({ postDetail: [...oldMessages, newMessage] });
-          }
+          this.setState({ messageType: 'newMessage', postDetail: [...oldMessages, newMessage] });
           break;
 
         case ('numberOfUsers'):
@@ -90,12 +94,9 @@ class App extends Component {
           break;
 
         case ('nameNotify'):
-          const { oldName, currentUser, currentColor } = nameNotify;
-          const notifyPost = { currentUser, nameColor: currentColor, oldName, newContent: '' };
           this.setState({
-            postDetail: [...oldMessages, notifyPost],
-            messageType: 'notification',
-            chatbarDefaults: notifyPost
+            postDetail: [...oldMessages, nameNotify],
+            messageType: 'notification'
           })
           break;
 
@@ -115,6 +116,7 @@ class App extends Component {
 
   render() {
     const { loading, postDetail, chatbarDefaults, numOfUsers} = this.state;
+
     const displayUsers = (numOfUsers === 1) ? (`${numOfUsers} user online`) : (`${numOfUsers} users online`)
     if (loading) {
       return (
@@ -133,7 +135,7 @@ class App extends Component {
               {displayUsers}
             </div>
           </nav>
-          <MessageList data={ postDetail } />
+          <MessageList data={ postDetail }/>
           <ChatBar newData={ this.addNewMessage } user={chatbarDefaults} />
         </div>
       );

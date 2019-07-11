@@ -9,31 +9,32 @@ class MessageList extends Component {
 
   renderToMessageList(data) {
     
-    let messageList = [];
-
-    const currentList = (data.map(message => {
+    return data.map(message => {
       if (message.messageId) {
         const { username, content, messageId, nameColor } = message;
-        return (<Message key={messageId} type={'newMessage'} user={username} displayColor={nameColor} content={content} />);
-      } else {
+        return (
+          <div>
+            <Message key={messageId} type={'newMessage'} user={username} displayColor={nameColor} content={content} />
+          </div>
+        );
+      } else  {
         const { currentUser, oldName, nameColor } = message;
-        return (<Message type={'notification'} fromName={oldName} toName={currentUser} displayColor={nameColor}/>)        
+        return (
+          <div>
+            <Message type={'notification'} fromName={oldName} toName={currentUser} displayColor={nameColor} />
+          </div>
+        )        
       }
-    }));
-    messageList.push(currentList);
-    
-    return messageList.map(post => {
-      return post;
     });
   }
 
   render() {
     const { data } = this.props;
-    const checkType = (<div>{this.renderToMessageList(data)}</div>);
+    const renderList = this.renderToMessageList(data);
 
     return (
     <main className="messages">
-      { checkType }
+        {renderList}
     </main>
     );
   }
