@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 
-
 class ChatBar extends Component {
-  
   handleNewName = (e) => {
     const displayName = this.refs.displayName.value;
     const addNewMessage = this.props.newData;
@@ -10,20 +8,15 @@ class ChatBar extends Component {
         addNewMessage({ messageType: 'notification', displayName });
     }
   }
-  
   handleNewMessage = e => {
-
     const displayName = this.refs.displayName.value || 'Anonymous';
     const updateMessage = this.refs.newMessage.value;
     const addNewMessage = this.props.newData;
     if (e.charCode == 13 && updateMessage) {
-
       addNewMessage({ messageType: 'newMessage', username: displayName, content: updateMessage, displayName}) ;
       this.refs.newMessage.value = '';
     }
-
   }
-
   render() {
     const  { currentUser, newContent} = this.props.user;
     const placeholder = (currentUser === 'Anonymous') ? 'Set a display name' : currentUser 
