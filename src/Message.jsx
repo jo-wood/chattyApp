@@ -43,7 +43,7 @@ class Message extends Component{
     const message = (this.renderMessage(this.props)) 
     const notification = (this.renderNotification(this.props))
     const { type } = this.props;
-    const post = (type == 'notification') ? notification : message 
+    const post = (type == 'newMessage') ? message : notification
     return (
       <div>
         { post }
