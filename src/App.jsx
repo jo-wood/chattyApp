@@ -92,6 +92,9 @@ class App extends Component {
       );
     }
   }
+  //
+  //   HELPER FUNCTIONS
+  //
   addNewMessage = (newMessage) => {
     const { currentUser } = this.state.chatbarDefaults;
     const currentState = this.state;

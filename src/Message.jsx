@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 class Message extends Component{
   renderMessage(props) {
     const { user, content, displayColor } = props;
-    const style = { color: displayColor }
+    let style = { color: displayColor }
     return (
       <div className="message" >
         <span style={ style } className="message-username">
@@ -20,8 +20,7 @@ class Message extends Component{
     if (fromName == 'Anonymous') {
       return (
         <div className="notification">
-          { toName }
-          {` has joined the convo `}
+          <em><p className="joinedConvo"> {toName} has joined the convo </p></em>
         </div>
       )
     } else if (toName == 'Anonymous'){
@@ -32,9 +31,12 @@ class Message extends Component{
     } else {
       return (
         <div className="notification">
-          { fromName }
-          { ' changed their name to ' }
-          { toName }
+          <p className='nameChanged'>
+            {fromName}
+            {' changed their name to '}
+            <strong> {toName}</strong>
+          </p>
+
         </div>
       )
     }
