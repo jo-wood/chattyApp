@@ -2,6 +2,8 @@
 
 ## App Summary
 
+This app will allow users to communicate with each other without having to register accounts. A real-time chatroom. It uses React, Webpack and Babel, and Websockets. 
+
 This app was produced during participation in Lighthouse Labs curriculum.
 
 ## Explore chattyApp:
